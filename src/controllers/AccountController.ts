@@ -7,7 +7,6 @@ export const Create = async (req: Request, res: Response) => {
     balance: req.body.balance,
     user_id: req.user.id,
   };
-  console.log("Params befor service",params)
   const response = await AccountServices.createNewAccount(params);
   res.status(response.statusCode).send(response);
 };
@@ -34,13 +33,11 @@ export const Update = async (req: Request, res: Response) => {
   res.status(response.statusCode).send(response);
 };
 
-export const Delete = async (req:Request,res:Response) => {
-    const params = {
+export const Delete = async (req: Request, res: Response) => {
+  const params = {
     id: req.params.id,
     user_id: req.user.id,
   };
-    const response = await AccountServices.deleteAccount(params);
+  const response = await AccountServices.deleteAccount(params);
   res.status(response.statusCode).send(response);
-}
-
-
+};

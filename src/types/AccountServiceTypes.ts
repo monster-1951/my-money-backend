@@ -9,7 +9,7 @@ export interface Account {
 
 export interface newAccount extends Account {}
 
-export interface dataToModify {
+export interface AccountDataToModify {
   name?: string;
   balance?: number;
 }
@@ -40,7 +40,7 @@ export interface createNewAccountParams {
 export interface updateAccountParams  {
   id: string | string[];
   user_id: bigint;
-  dataToModify: dataToModify;
+  dataToModify: AccountDataToModify;
 }
 
 export interface deleteAccountParams extends getAccountByIdParams{}
