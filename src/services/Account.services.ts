@@ -1,16 +1,20 @@
 import { prisma } from "../lib/prisma";
 import * as AccountServiceTypes from "../types/AccountServiceTypes";
+import * as Utility from '../lib/helper'
 
 const ACCOUNTS = prisma.accounts;
 
 // HELPERS
+
+
+
 export const findExistingAccountByIdOrName = async (
   params: AccountServiceTypes.findExistingAccountParams,
 ): Promise<AccountServiceTypes.findExistingAccountByIdOrNameResponse> => {
   let existingAccountsOfUser: AccountServiceTypes.Account[];
   try {
     if (params.id) {
-      const id = sanitizeIdId(params.id);
+      const id = Utility.sanitizeId(params.id);
       existingAccountsOfUser = await ACCOUNTS.findMany({
         where: {
           AND: {
@@ -43,26 +47,13 @@ export const findExistingAccountByIdOrName = async (
   }
 };
 
-export const sanitizeIdId = (id: string | string[]) => {
-  if (typeof id === "string") return BigInt(id);
-  return BigInt(id[0]);
-};
-
-export const checkForSameValue = async (
-  account: AccountServiceTypes.Account,
-  columnName: keyof AccountServiceTypes.Account,
-  value: any,
-) => {
-  return account[columnName] === value;
-};
-
 export const checkIfUpdateIsValid = async (params: {
   id: string | string[];
   user_id: bigint;
-  newData: AccountServiceTypes.dataToModify;
+  newData: AccountServiceTypes.AccountDataToModify;
 }) => {
   let isUpdateValid = false;
-  let key: keyof AccountServiceTypes.dataToModify;
+  let key: keyof AccountServiceTypes.AccountDataToModify;
   const { existingAccountsOfUser } = await findExistingAccountByIdOrName({
     id: params.id,
     user_id: params.user_id,
@@ -70,7 +61,7 @@ export const checkIfUpdateIsValid = async (params: {
   if (existingAccountsOfUser) {
     for (key in params.newData) {
       if (
-        await checkForSameValue(
+        await Utility.checkForSameValue(
           existingAccountsOfUser[0],
           key,
           params.newData[key],
@@ -87,7 +78,7 @@ export const checkIfUpdateIsValid = async (params: {
 };
 
 export const update = async (
-  data: AccountServiceTypes.dataToModify,
+  data: AccountServiceTypes.AccountDataToModify,
   id: bigint,
 ): Promise<AccountServiceTypes.updateAccountResponse> => {
   try {
@@ -111,22 +102,6 @@ export const update = async (
   }
 };
 
-export const deleteAccount = async (
-  params: AccountServiceTypes.deleteAccountParams,
-): Promise<AccountServiceTypes.deleteAccountResponse> => {
-  const id = sanitizeIdId(params.id);
-  try {
-    const deletedAccount = await ACCOUNTS.delete({
-      where: {
-        id,
-        user_id: params.user_id,
-      },
-    });
-    return { message: "", statusCode: 200, deletedAccount };
-  } catch (error) {
-    return { message: "", statusCode: 200, error };
-  }
-};
 // MAIN FUNCTIONS
 
 export const createNewAccount = async (
@@ -178,7 +153,7 @@ export const getAllAccounts = async (params: {
 export const updateAccount = async (
   params: AccountServiceTypes.updateAccountParams,
 ): Promise<AccountServiceTypes.updateAccountResponse> => {
-  const id = sanitizeIdId(params.id);
+  const id = Utility.sanitizeId(params.id);
   const newData = params.dataToModify;
   try {
     const isUpdateValid = await checkIfUpdateIsValid({
@@ -192,10 +167,27 @@ export const updateAccount = async (
     } else {
       return {
         message: "The existing account already matches the data you sent",
-        statusCode: 500,
+        statusCode: 422,
       };
     }
   } catch (error) {
     return { message: "Failed to update account", statusCode: 500, error };
+  }
+};
+
+export const deleteAccount = async (
+  params: AccountServiceTypes.deleteAccountParams,
+): Promise<AccountServiceTypes.deleteAccountResponse> => {
+  const id = Utility.sanitizeId(params.id);
+  try {
+    const deletedAccount = await ACCOUNTS.delete({
+      where: {
+        id,
+        user_id: params.user_id,
+      },
+    });
+    return { message: "", statusCode: 200, deletedAccount };
+  } catch (error) {
+    return { message: "", statusCode: 500, error };
   }
 };
