@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model accounts {
+  id                                               BigInt    @id @default(autoincrement())
+  name                                             String    @db.VarChar(30)
+  balance                                          Float     @db.Real
+  user_id                                          BigInt
+  users                                            users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_owner_id_fkey")
+  records_records_accountToaccounts                records[] @relation("records_accountToaccounts")
+  records_records_transferred_to_accountToaccounts records[] @relation("records_transferred_to_accountToaccounts")
+}
+
+model categories {
+  id            BigInt        @id @default(autoincrement())
+  name          String        @db.VarChar(25)
+  user_id       BigInt
+  category_type category_type
+  users         users         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "categories_owner_id_fkey")
+  records       records[]
+}
+
+model records {
+  id                                                BigInt      @id @default(autoincrement())
+  type                                              record_type
+  amount                                            Float       @db.Real
+  account                                           BigInt
+  time                                              DateTime    @db.Timestamptz(6)
+  category                                          BigInt?
+  notes                                             String?
+  user_id                                           BigInt
+  transferred_to_account                            BigInt?
+  users                                             users       @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_records_user")
+  accounts_records_accountToaccounts                accounts    @relation("records_accountToaccounts", fields: [account], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  categories                                        categories? @relation(fields: [category], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  accounts_records_transferred_to_accountToaccounts accounts?   @relation("records_transferred_to_accountToaccounts", fields: [transferred_to_account], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "records_to_account_fkey")
+}
+
+model users {
+  id            BigInt       @id @default(autoincrement())
+  name          String
+  email         String       @unique
+  password_hash String
+  accounts      accounts[]
+  categories    categories[]
+  records       records[]
+}
+
+enum category_type {
+  Income
+  Expense
+}
+
+enum record_type {
+  Income   @map("(+) Income")
+  Expense  @map("(-) Expense")
+  Transfer @map("(.) Transfer")
+}
