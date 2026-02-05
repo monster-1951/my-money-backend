@@ -3,11 +3,13 @@ import * as Middleware from "../middlewares/middlewares";
 import * as Schemas from "../schemas/RecordSchema";
 import * as RecordController from '../controllers/RecordController'
 
+
 const record = express.Router();
 
 record.use(Middleware.AuthorizeMiddleWare);
 
-record.get("/", RecordController.GetAll);
+record.get("/", RecordController.GetRecords);
+
 
 record.post(
   "/create/",
