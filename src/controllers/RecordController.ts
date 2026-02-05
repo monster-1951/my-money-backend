@@ -21,3 +21,9 @@ export const CreateTransferRecord = async (req: Request, res: Response) => {
   const response = await RecordServices.Create(params);
   res.status(response.statusCode).send(response);
 };
+
+export const DeleteRecord = async (req: Request,res: Response) => {
+  const params = {id:Utility.sanitizeId(req.params.id)}
+  const response = await RecordServices.DeleteRecord(params);
+  res.status(response.statusCode).send(response);
+}

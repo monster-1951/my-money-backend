@@ -71,6 +71,10 @@ export interface CreateRecordParams {
   transferred_to_account?: bigint;
 }
 
+export interface DeleteRecordParams {
+  id:bigint
+}
+
 // RESPONSE TYPES
 
 export interface GetAllRecordsResponse extends StandardType.ServiceResponse {
@@ -80,4 +84,8 @@ export interface GetAllRecordsResponse extends StandardType.ServiceResponse {
 
 export interface CreateRecordResponse extends StandardType.ServiceResponse {
   newRecord?: Record;
+}
+
+export interface DeleteRecordResponse extends StandardType.ServiceResponse {
+  deletedRecord ?: Record
 }

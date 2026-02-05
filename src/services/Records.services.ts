@@ -40,3 +40,18 @@ export const Create = async (
     return { message: "Failed to create Record", statusCode: 500, error };
   }
 };
+
+export const DeleteRecord = async (
+  params: RecordServiceTypes.DeleteRecordParams,
+): Promise<RecordServiceTypes.DeleteRecordResponse> => {
+  try {
+    const deletedRecord = await RECORDS.delete({
+      where: {
+        id:params.id,
+      },
+    });
+    return { message: "Deleted Record", deletedRecord, statusCode: 200 };
+  } catch (error) {
+    return { message: "Failed to Delete Record", statusCode: 500, error };
+  }
+};

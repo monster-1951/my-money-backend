@@ -22,4 +22,7 @@ record.post(
   Middleware.validateRequestAgainstSchema(Schemas.TransferRecordSchema),
   RecordController.CreateTransferRecord
 );
+
+record.delete("/delete/:id",RecordController.DeleteRecord)
+
 export default record;

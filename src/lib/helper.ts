@@ -47,7 +47,7 @@ export const SanitizeCreateRecordParams = (params:any,user_id:bigint):RecordType
     amount: params.amount,
     account: sanitizeId(params.account_id),
     time: sanitizeDate(params.time),
-    user_id: params.user_id,
+    user_id: user_id,
     category: sanitizeId(params.category_id),
     notes: params.notes,
   }
@@ -60,6 +60,6 @@ export const SanitizeCreateTransferRecordParams = (params:any,user_id:bigint) =>
     time: sanitizeDate(params.time),
     transferred_to_account: sanitizeId(params.transferred_to_account_id),
     type: params.type,
-    user_id: params.user.id,
+    user_id: user_id,
   }
 }
