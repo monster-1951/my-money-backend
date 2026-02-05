@@ -24,14 +24,14 @@ export const Create = async (req: Request, res: Response) => {
 };
 
 export const Update = async (req: Request, res: Response) => {
-    const params = {
+  const params = {
     user_id: req.user.id,
-    id:req.params.id,
-    dataToModify:req.body
+    id: req.params.id,
+    dataToModify: req.body,
   };
   const response = await CategoryServices.UpdateCategory(params);
   res.status(response.statusCode).send(response);
-}
+};
 
 export const Delete = async (req: Request, res: Response) => {
   const params = { user_id: req.user.id, id: req.params.id };
