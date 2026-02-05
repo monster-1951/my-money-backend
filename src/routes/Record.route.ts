@@ -1,22 +1,23 @@
-import express, { Request,Response } from 'express'
-import { getAllRecords } from '../services/Records.services';
-import { AuthorizeMiddleWare, validateRequestAgainstSchema } from '../middlewares/middlewares';
-import { TransactionRecordSchema } from '../schemas/TransactionRecord.schema';
+import express, { Request, Response } from "express";
+import * as Middleware from "../middlewares/middlewares";
+import * as Schemas from "../schemas/RecordSchema";
+import * as RecordController from '../controllers/RecordController'
 
-const record = express.Router()
+const record = express.Router();
 
-record.use(AuthorizeMiddleWare)
+record.use(Middleware.AuthorizeMiddleWare);
 
-record.get("/getAll", async (req: Request, res:Response) => {
-  const allRecords = await getAllRecords();
-  res.send({allRecords,user:req.user});
-});
+record.get("/", RecordController.GetAll);
 
 record.post(
-  "/create",
-  validateRequestAgainstSchema(TransactionRecordSchema),
-  async (req: Request, res: Response) => {
-    res.send(req);
-  },
+  "/create/",
+  Middleware.validateRequestAgainstSchema(Schemas.IncomeExpenseRecordSchema),
+  RecordController.CreateIncomeExpenseRecord
 );
-export default record
+
+record.post(
+  "/create/transer_record",
+  Middleware.validateRequestAgainstSchema(Schemas.TransferRecordSchema),
+  RecordController.CreateTransferRecord
+);
+export default record;

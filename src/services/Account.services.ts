@@ -142,6 +142,7 @@ export const getAllAccounts = async (params: {
     });
     return {
       allAccounts,
+      TotalCount:allAccounts.length,
       message: "Accounts Fetched successfully",
       statusCode: 200,
     };

@@ -1,6 +1,9 @@
-export const sanitizeId = (id: string | string[]) => {
-  if (typeof id === "string") return BigInt(id);
-  return BigInt(id[0]);
+import * as lodash from "lodash";
+
+export const sanitizeId = (id: any) => {
+  if (lodash.isArray(id)) 
+    return BigInt(id[0]);
+  return BigInt(id);
 };
 
 export const checkForSameValue = async (
@@ -10,3 +13,7 @@ export const checkForSameValue = async (
 ) => {
   return category[columnName] === value;
 };
+
+(BigInt.prototype as any).toJSON = function () {
+return (Number(this));
+}

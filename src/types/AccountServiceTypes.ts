@@ -37,13 +37,13 @@ export interface createNewAccountParams {
 //     id: string | string[];
 // }
 
-export interface updateAccountParams  {
+export interface updateAccountParams {
   id: string | string[];
   user_id: bigint;
   dataToModify: AccountDataToModify;
 }
 
-export interface deleteAccountParams extends getAccountByIdParams{}
+export interface deleteAccountParams extends getAccountByIdParams {}
 
 // RESPONSE TYYPES
 
@@ -53,6 +53,7 @@ export interface createNewAccountResponse extends ServiceResponse {
 
 export interface getAllAccountsResponse extends ServiceResponse {
   allAccounts?: newAccount[];
+  TotalCount?: number;
 }
 
 export interface getAccountByIdResponse extends ServiceResponse {
@@ -67,6 +68,6 @@ export interface updateAccountResponse extends ServiceResponse {
   updatedAccount?: Account;
 }
 
-export interface deleteAccountResponse extends ServiceResponse{
-  deletedAccount?:Account
+export interface deleteAccountResponse extends ServiceResponse {
+  deletedAccount?: Account;
 }
