@@ -128,16 +128,17 @@ export const Create = async (
 export const UpdateTransaction = async (
   existingRecord: RecordServiceTypes.Record,
   params: RecordServiceTypes.UpdateRecordParams,
-):Promise<RecordServiceTypes.UpdateRecordResponse> => {
+): Promise<RecordServiceTypes.UpdateRecordResponse> => {
   const delta = Number(existingRecord.amount) - Number(params.data.amount);
+  const beta = Number(existingRecord.amount) + Number(params.data.amount);
   //  0 0
-  if (existingRecord.type === "Transfer" && params.data.type === "Transfer"  ) {
+  if (existingRecord.type === "Transfer" && params.data.type === "Transfer") {
     if (
       existingRecord.account === params.data.account &&
       existingRecord.transferred_to_account ===
         params.data.transferred_to_account
     ) {
-      console.log("Delta", delta)
+      console.log("Delta", delta);
       const [
         UpdatedRecord,
         { balance: from_account_balance },
@@ -260,8 +261,7 @@ export const UpdateTransaction = async (
         to_account_balance,
         statusCode: 200,
       };
-    }
-    else {
+    } else {
       const [
         UpdatedRecord,
         { balance: from_account_balance },
@@ -310,8 +310,11 @@ export const UpdateTransaction = async (
         statusCode: 200,
       };
     }
-  } else if ((existingRecord.type === "Expense" && params.data.type === "Transfer"  )){
-    if(existingRecord.account === params.data.account){
+  } else if (
+    existingRecord.type === "Expense" &&
+    params.data.type === "Transfer"
+  ) {
+    if (existingRecord.account === params.data.account) {
       const [
         UpdatedRecord,
         { balance: from_account_balance },
@@ -344,11 +347,183 @@ export const UpdateTransaction = async (
         statusCode: 200,
       };
     } else {
-
+      const [
+        UpdatedRecord,
+        { balance: from_account_balance },
+        { balance: to_account_balance },
+      ] = await prisma.$transaction([
+        RECORDS.update({ where: { id: params.id }, data: params.data }),
+        ACCOUNTS.update({
+          where: { id: params.data.account },
+          data: {
+            balance: {
+              decrement: params.data.amount || existingRecord.amount,
+            },
+          },
+        }),
+        ACCOUNTS.update({
+          where: { id: params.data.transferred_to_account as bigint },
+          data: {
+            balance: {
+              increment: params.data.amount || existingRecord.amount,
+            },
+          },
+        }),
+        ACCOUNTS.update({
+          where: { id: existingRecord.account },
+          data: {
+            balance: {
+              increment: existingRecord.amount,
+            },
+          },
+        }),
+      ]);
+      return {
+        message: "Record Added Successfully",
+        type: "Transfer",
+        UpdatedRecord,
+        from_account_balance,
+        to_account_balance,
+        statusCode: 200,
+      };
+    }
+  } else if (
+    existingRecord.type === "Income" &&
+    params.data.type === "Transfer"
+  ) {
+    if (existingRecord.account === params.data.account) {
+      const [
+        UpdatedRecord,
+        { balance: from_account_balance },
+        { balance: to_account_balance },
+      ] = await prisma.$transaction([
+        RECORDS.update({ where: { id: params.id }, data: params.data }),
+        ACCOUNTS.update({
+          where: { id: existingRecord.account },
+          data: {
+            balance: {
+              decrement: beta,
+            },
+          },
+        }),
+        ACCOUNTS.update({
+          where: { id: params.data.transferred_to_account as bigint },
+          data: {
+            balance: {
+              increment: params.data.amount || existingRecord.amount,
+            },
+          },
+        }),
+      ]);
+      return {
+        message: "Record Added Successfully",
+        type: "Transfer",
+        UpdatedRecord,
+        from_account_balance,
+        to_account_balance,
+        statusCode: 200,
+      };
+    } else {
+      const [
+        UpdatedRecord,
+        { balance: from_account_balance },
+        { balance: to_account_balance },
+      ] = await prisma.$transaction([
+        RECORDS.update({ where: { id: params.id }, data: params.data }),
+        ACCOUNTS.update({
+          where: { id: params.data.account },
+          data: {
+            balance: {
+              decrement: params.data.amount || existingRecord.amount,
+            },
+          },
+        }),
+        ACCOUNTS.update({
+          where: { id: params.data.transferred_to_account as bigint },
+          data: {
+            balance: {
+              increment: params.data.amount || existingRecord.amount,
+            },
+          },
+        }),
+        ACCOUNTS.update({
+          where: { id: existingRecord.account },
+          data: {
+            balance: {
+              decrement: existingRecord.amount,
+            },
+          },
+        }),
+      ]);
+      return {
+        message: "Record Added Successfully",
+        type: "Transfer",
+        UpdatedRecord,
+        from_account_balance,
+        to_account_balance,
+        statusCode: 200,
+      };
+    }
+  } else if (
+    existingRecord.type === "Expense" &&
+    params.data.type === "Expense"
+  ) {
+    if (existingRecord.account === params.data.account) {
+      const [UpdatedRecord, { balance: from_account_balance }] =
+        await prisma.$transaction([
+          RECORDS.update({ where: { id: params.id }, data: params.data }),
+          ACCOUNTS.update({
+            where: { id: params.data.account },
+            data: {
+              balance: {
+                increment: delta,
+              },
+            },
+          }),
+        ]);
+      return {
+        message: "Record Updated Successfully",
+        type: "Expense",
+        UpdatedRecord,
+        from_account_balance,
+        statusCode: 200,
+      };
+    } else {
+      const [UpdatedRecord, { balance: from_account_balance }] =
+        await prisma.$transaction([
+          RECORDS.update({ where: { id: params.id }, data: params.data }),
+          ACCOUNTS.update({
+            where: { id: params.data.account },
+            data: {
+              balance: {
+                decrement:params.data.amount,
+              },
+            },
+          }),
+          ACCOUNTS.update({
+            where: { id: existingRecord.account },
+            data: {
+              balance: {
+                increment: existingRecord.amount,
+              },
+            },
+          }),
+        ]);
+      return {
+        message: "Record Added Successfully",
+        type: "Transfer",
+        UpdatedRecord,
+        from_account_balance,
+        statusCode: 200,
+      };
     }
   }
 
-      return { message: "Failed to Update Record", statusCode: 500, type:params.data.type};
+  return {
+    message: "Failed to Update Record",
+    statusCode: 500,
+    type: params.data.type,
+  };
 };
 export const UpdateRecord = async (
   params: RecordServiceTypes.UpdateRecordParams,
@@ -365,9 +540,14 @@ export const UpdateRecord = async (
       id: params.id,
       user_id: params.user_id,
     });
-    return response
+    return response;
   } catch (error) {
-    return { message: "Failed to Update Record", statusCode: 500, error , type:params.data.type};
+    return {
+      message: "Failed to Update Record",
+      statusCode: 500,
+      error,
+      type: params.data.type,
+    };
   }
 };
 
