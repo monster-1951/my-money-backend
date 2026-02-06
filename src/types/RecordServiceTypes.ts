@@ -1,6 +1,7 @@
 import z from "zod";
 import * as RecordSchemas from "../schemas/RecordSchema";
 import * as StandardType from "./StandardTypes";
+import { Account } from "./AccountServiceTypes";
 
 
 export type record_type = "Income" | "Expense" | "Transfer";
@@ -66,10 +67,10 @@ export interface RecordDataToModify {
   type: record_type;
   amount: StandardType.money;
   account: bigint;
+  transferred_to_account: bigint | null;
   time: Date;
   category: bigint | null;
   notes?: string;
-  transferred_to_account: bigint | null;
 }
 // PARAMS TYPES
 
@@ -108,10 +109,16 @@ export interface GetAllRecordsResponse extends StandardType.ServiceResponse {
 
 export interface CreateRecordResponse extends StandardType.ServiceResponse {
   newRecord?: Record;
+  from_account_balance?:StandardType.money
+  to_account_balance?:StandardType.money
+  type:record_type
 }
 
 export interface UpdateRecordResponse extends StandardType.ServiceResponse {
   UpdatedRecord?: Record;
+  from_account_balance?:StandardType.money
+  to_account_balance?:StandardType.money
+  type:record_type
 }
 
 export interface DeleteRecordResponse extends StandardType.ServiceResponse {
