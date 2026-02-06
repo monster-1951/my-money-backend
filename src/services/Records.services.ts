@@ -6,12 +6,15 @@ const RECORDS = prisma.records;
 export const GetRecords = async (
   params: RecordServiceTypes.GetAllRecordsParams,
 ): Promise<RecordServiceTypes.GetAllRecordsResponse> => {
+  console.log(params.queryParams)
   try {
     const Records = await RECORDS.findMany({
       where: {
         user_id: params.user_id,
-        AND: params.queryParams,
+        AND: params.queryParams.filters,
       },
+      skip:(params.queryParams.page) || 0,
+      take:10
     });
     if (Records.length)
       return {
@@ -40,6 +43,21 @@ export const Create = async (
     return { message: "Failed to create Record", statusCode: 500, error };
   }
 };
+
+export const UpdateRecord = async (params:RecordServiceTypes.UpdateRecordParams):Promise<RecordServiceTypes.UpdateRecordResponse> => {
+  try {
+    const UpdatedRecord = await RECORDS.update({
+      where:{
+        id:params.id,
+        user_id:params.user_id
+      },
+      data:params.data
+    })
+   return { message: "Updated record Successfully", statusCode: 200, UpdatedRecord }
+  } catch (error) {
+   return { message: "Failed to Update Record", statusCode: 500, error }
+  }
+}
 
 export const DeleteRecord = async (
   params: RecordServiceTypes.DeleteRecordParams,

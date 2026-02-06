@@ -10,20 +10,46 @@ export const GetRecords = async (req: Request, res: Response) => {
   res.status(response.statusCode).send(response);
 };
 
-export const CreateIncomeExpenseRecord = async (req: Request,res: Response) => {
-  const params: RecordType.CreateRecordParams = Utility.SanitizeCreateRecordParams(req.body,req.user.id)
+export const CreateIncomeExpenseRecord = async (
+  req: Request,
+  res: Response,
+) => {
+  const params: RecordType.CreateRecordParams =
+    Utility.SanitizeCreateRecordParams(req.body, req.user.id);
   const response = await RecordServices.Create(params);
   res.status(response.statusCode).send(response);
 };
 
 export const CreateTransferRecord = async (req: Request, res: Response) => {
-  const params: RecordType.CreateRecordParams =  Utility.SanitizeCreateTransferRecordParams(req.body,req.user.id)
+  const params: RecordType.CreateRecordParams =
+    Utility.SanitizeCreateTransferRecordParams(req.body, req.user.id);
   const response = await RecordServices.Create(params);
   res.status(response.statusCode).send(response);
 };
 
-export const DeleteRecord = async (req: Request,res: Response) => {
-  const params = {id:Utility.sanitizeId(req.params.id)}
+export const UpdateIncomeExpenseRecord = async (
+  req: Request,
+  res: Response,
+) => {
+  const params: RecordType.UpdateRecordParams =
+    Utility.SanitizeUpdateRecordParams(req.body, req.params.id, req.user.id);
+  const response = await RecordServices.UpdateRecord(params);
+  res.status(response.statusCode).send(response);
+};
+
+export const UpdateTransferRecord = async (req: Request, res: Response) => {
+  const params: RecordType.UpdateRecordParams =
+    Utility.SanitizeUpdateTransferRecordParams(
+      req.body,
+      req.params.id,
+      req.user.id,
+    );
+  const response = await RecordServices.UpdateRecord(params);
+  res.status(response.statusCode).send(response);
+};
+
+export const DeleteRecord = async (req: Request, res: Response) => {
+  const params = { id: Utility.sanitizeId(req.params.id) };
   const response = await RecordServices.DeleteRecord(params);
   res.status(response.statusCode).send(response);
-}
+};

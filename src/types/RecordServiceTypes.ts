@@ -1,21 +1,26 @@
 import z from "zod";
 import * as RecordSchemas from "../schemas/RecordSchema";
-import * as StandardType  from "./StandardTypes";
+import * as StandardType from "./StandardTypes";
+
 
 export type record_type = "Income" | "Expense" | "Transfer";
 
-export interface IncomeExpenseRecord extends z.infer<typeof RecordSchemas.IncomeExpenseRecordSchema> {
+export interface IncomeExpenseRecord extends z.infer<
+  typeof RecordSchemas.IncomeExpenseRecordSchema
+> {
   user_id: bigint;
 }
 
-export interface TransferRecord extends z.infer<typeof RecordSchemas.TransferRecordSchema> {
+export interface TransferRecord extends z.infer<
+  typeof RecordSchemas.TransferRecordSchema
+> {
   user_id: bigint;
 }
 
 export interface Record {
   id: bigint;
   type: record_type;
-  amount: number;
+  amount: StandardType.money;
   account: bigint;
   time: Date;
   category: bigint | null;
@@ -27,52 +32,71 @@ export interface Record {
 export interface RecordQueryParamsType {
   id?: bigint;
   type?: record_type;
-  amount_gte?:number
-  amount_lt?:number
+  amount_gte?: StandardType.money;
+  amount_lt?: StandardType.money;
   account?: bigint;
-  time_gte?:Date
-  time_lt?:Date
+  time_gte?: Date;
+  time_lt?: Date;
   category?: bigint;
   transferred_to_account?: bigint;
+  page?: number;
 }
 
 export interface RecordFilters {
-  id?: bigint;
-  type?: record_type;
-  amount?:{
-    gte?:number,
-    lt?:number
-  }
-  amount_lt?:number
-  account?: bigint;
-  time?:{
-    gte?: Date
-    lt?: Date
-  }
-  category?: bigint;
-  transferred_to_account?: bigint;
+  filters: {
+    id?: bigint;
+    type?: record_type;
+    amount?: {
+      gte?: StandardType.money;
+      lt?: StandardType.money;
+    };
+    amount_lt?: StandardType.money;
+    account?: bigint;
+    time?: {
+      gte?: Date;
+      lt?: Date;
+    };
+    category?: bigint;
+    transferred_to_account?: bigint;
+  };
+  page?: number;
 }
 
+export interface RecordDataToModify {
+  type: record_type;
+  amount: StandardType.money;
+  account: bigint;
+  time: Date;
+  category: bigint | null;
+  notes?: string;
+  transferred_to_account: bigint | null;
+}
 // PARAMS TYPES
 
 export interface GetAllRecordsParams {
   user_id: bigint;
-  queryParams: RecordQueryParamsType;
+  queryParams: RecordFilters
 }
 
 export interface CreateRecordParams {
   type: record_type;
-  amount: number;
+  amount: StandardType.money;
   account: bigint;
   time: Date;
-  category?: bigint;
+  category: bigint | null;
   notes?: string;
   user_id: bigint;
-  transferred_to_account?: bigint;
+  transferred_to_account: bigint | null;
+}
+
+export interface UpdateRecordParams {
+  id: bigint;
+  data: RecordDataToModify;
+  user_id: bigint;
 }
 
 export interface DeleteRecordParams {
-  id:bigint
+  id: bigint;
 }
 
 // RESPONSE TYPES
@@ -86,6 +110,10 @@ export interface CreateRecordResponse extends StandardType.ServiceResponse {
   newRecord?: Record;
 }
 
+export interface UpdateRecordResponse extends StandardType.ServiceResponse {
+  UpdatedRecord?: Record;
+}
+
 export interface DeleteRecordResponse extends StandardType.ServiceResponse {
-  deletedRecord ?: Record
+  deletedRecord?: Record;
 }
