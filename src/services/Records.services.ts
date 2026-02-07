@@ -883,6 +883,7 @@ export const Delete = async (
 
     return {message:"Record Deleted Successfully", statusCode:200, type: existingRecord.type , deletedRecord , from_account_balance ,to_account_balance}
   } else if (existingRecord.type === "Expense") {
+    console.log(params)
     const [deletedRecord,{balance:from_account_balance}] = await prisma.$transaction([
       RECORDS.delete({
         where: {

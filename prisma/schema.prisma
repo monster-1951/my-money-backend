@@ -22,7 +22,9 @@ model categories {
   name          String        @db.VarChar(25)
   user_id       BigInt
   category_type category_type
+  icon          BigInt
   users         users         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "categories_owner_id_fkey")
+  icons         icons         @relation(fields: [icon], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categories_icons")
   records       records[]
 }
 
@@ -50,6 +52,12 @@ model users {
   accounts      accounts[]
   categories    categories[]
   records       records[]
+}
+
+model icons {
+  id         BigInt       @id @default(autoincrement())
+  name       String?
+  categories categories[]
 }
 
 enum category_type {

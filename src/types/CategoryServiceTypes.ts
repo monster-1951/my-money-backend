@@ -31,11 +31,13 @@ export interface CreateCategoryParams {
   name: string;
   category_type: category_type;
   user_id: bigint;
+  icon:bigint
 }
 
 export interface CategoryDataToModify {
   name: string;
   category_type: category_type;
+  icon:bigint
 }
 
 export interface UpdateParams {

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as CategoryServices from "../services/Category.services";
+import { sanitizeId } from "../lib/helper";
 
 export const getAllCategories = async (req: Request, res: Response) => {
   const params = { user_id: req.user.id };
@@ -18,6 +19,7 @@ export const Create = async (req: Request, res: Response) => {
     user_id: req.user.id,
     name: req.body.name,
     category_type: req.body.category_type,
+    icon:sanitizeId(req.body.icon)
   };
   const response = await CategoryServices.Create(params);
   res.status(response.statusCode).send(response);
