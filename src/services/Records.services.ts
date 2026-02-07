@@ -9,20 +9,24 @@ export const GetRecords = async (
 ): Promise<RecordServiceTypes.GetAllRecordsResponse> => {
   console.log(params.queryParams);
   try {
-    const Records = await RECORDS.findMany({
+    const [Records,TotalRecords] = await prisma.$transaction([
+      RECORDS.findMany({
       where: {
         user_id: params.user_id,
         AND: params.queryParams.filters,
       },
       skip: params.queryParams.page || 0,
       take: 10,
-    });
+    }),
+    RECORDS.count()
+    ])
     if (Records.length)
       return {
         message: "Fetched Records Successfully",
         statusCode: 200,
         TotalCount: Records.length,
         Records,
+        TotalRecords
       };
     return { message: "No Records found", statusCode: 404 };
   } catch (error) {

@@ -106,6 +106,7 @@ export interface DeleteRecordParams {
 export interface GetAllRecordsResponse extends StandardType.ServiceResponse {
   Records?: Record[];
   TotalCount?: number;
+  TotalRecords?:number;
 }
 
 export interface CreateRecordResponse extends StandardType.ServiceResponse {

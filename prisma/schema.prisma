@@ -58,7 +58,7 @@ enum category_type {
 }
 
 enum record_type {
-  Income   @map("(+) Income")
-  Expense  @map("(-) Expense")
-  Transfer @map("(.) Transfer")
+  Income
+  Expense
+  Transfer
 }
