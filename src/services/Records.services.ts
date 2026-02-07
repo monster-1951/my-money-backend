@@ -836,6 +836,9 @@ export const UpdateRecord = async (
         user_id: params.user_id,
       },
     });
+    if(!existingRecord.length){
+      return {message:"Record not found", statusCode : 404 , type: params.data.type}
+    }
     const response = UpdateTransaction(existingRecord[0], {
       data: params.data,
       id: params.id,
