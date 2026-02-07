@@ -339,7 +339,7 @@ export const UpdateTransaction = async (
       ]);
       return {
         message: "Record Added Successfully",
-        type:params.data.type,
+        type: params.data.type,
         UpdatedRecord,
         from_account_balance,
         to_account_balance,
@@ -416,7 +416,7 @@ export const UpdateTransaction = async (
       ]);
       return {
         message: "Record Added Successfully",
-        type:params.data.type,
+        type: params.data.type,
         UpdatedRecord,
         from_account_balance,
         to_account_balance,
@@ -612,7 +612,7 @@ export const UpdateTransaction = async (
         ]);
       return {
         message: "Record Updated Successfully",
-        type:params.data.type,
+        type: params.data.type,
         UpdatedRecord,
         from_account_balance,
         statusCode: 200,
@@ -707,7 +707,7 @@ export const UpdateTransaction = async (
         statusCode: 200,
       };
     }
-  }  else if (
+  } else if (
     existingRecord.type === "Expense" &&
     params.data.type === "Income"
   ) {
@@ -754,7 +754,7 @@ export const UpdateTransaction = async (
         ]);
       return {
         message: "Record Updated Successfully",
-        type:params.data.type,
+        type: params.data.type,
         UpdatedRecord,
         from_account_balance,
         statusCode: 200,
@@ -820,7 +820,6 @@ export const UpdateTransaction = async (
       type: params.data.type,
     };
   }
-
 };
 
 export const UpdateRecord = async (
@@ -849,17 +848,86 @@ export const UpdateRecord = async (
   }
 };
 
+export const Delete = async (
+  existingRecord: RecordServiceTypes.Record,
+  params: RecordServiceTypes.DeleteRecordParams,
+): Promise<RecordServiceTypes.DeleteRecordResponse> => {
+  if (existingRecord.type === "Transfer") {
+    const [deletedRecord,{balance:from_account_balance},{balance:to_account_balance}] = await prisma.$transaction([
+      RECORDS.delete({
+        where: {
+          id: params.id,
+        },
+      }),
+      ACCOUNTS.update({
+        where: { id: existingRecord.account },
+        data: {
+          balance: {
+            increment:existingRecord.amount
+          },
+        },
+      }),
+      ACCOUNTS.update({
+        where:{id:existingRecord.transferred_to_account as bigint},
+        data:{
+          balance:{
+            decrement:existingRecord.amount
+          }
+        }
+      })
+    ]);
+
+    return {message:"Record Deleted Successfully", statusCode:200, type: existingRecord.type , deletedRecord , from_account_balance ,to_account_balance}
+  } else if (existingRecord.type === "Expense") {
+    const [deletedRecord,{balance:from_account_balance}] = await prisma.$transaction([
+      RECORDS.delete({
+        where: {
+          id: params.id,
+        },
+      }),
+      ACCOUNTS.update({
+        where: { id: existingRecord.account },
+        data: {
+          balance: {
+            increment:existingRecord.amount
+          },
+        },
+      })
+    ])
+    return {message:"Record Deleted Successfully", statusCode:200, type: existingRecord.type , deletedRecord , from_account_balance }
+  } else {
+     const [deletedRecord,{balance:to_account_balance}] = await prisma.$transaction([
+      RECORDS.delete({
+        where: {
+          id: params.id,
+        },
+      }),
+      ACCOUNTS.update({
+        where: { id: existingRecord.account },
+        data: {
+          balance: {
+            decrement:existingRecord.amount
+          },
+        },
+      })
+    ])
+    return {message:"Record Deleted Successfully", statusCode:200, type: existingRecord.type , deletedRecord , to_account_balance }
+  }
+};
+
 export const DeleteRecord = async (
   params: RecordServiceTypes.DeleteRecordParams,
 ): Promise<RecordServiceTypes.DeleteRecordResponse> => {
   try {
-    const deletedRecord = await RECORDS.delete({
+        const existingRecords = await RECORDS.findMany({
       where: {
         id: params.id,
+        user_id: params.user_id,
       },
     });
-    return { message: "Deleted Record", deletedRecord, statusCode: 200 };
+    const response = await Delete(existingRecords[0],params)
+    return response
   } catch (error) {
-    return { message: "Failed to Delete Record", statusCode: 500, error };
+    return { message: "Failed to Delete Record", statusCode: 500, error  };
   }
 };

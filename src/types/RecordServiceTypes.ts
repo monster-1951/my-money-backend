@@ -98,6 +98,7 @@ export interface UpdateRecordParams {
 
 export interface DeleteRecordParams {
   id: bigint;
+  user_id:bigint
 }
 
 // RESPONSE TYPES
@@ -123,4 +124,7 @@ export interface UpdateRecordResponse extends StandardType.ServiceResponse {
 
 export interface DeleteRecordResponse extends StandardType.ServiceResponse {
   deletedRecord?: Record;
+  from_account_balance?:StandardType.money
+  to_account_balance?:StandardType.money
+  type?:record_type
 }
