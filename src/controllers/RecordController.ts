@@ -49,7 +49,7 @@ export const UpdateTransferRecord = async (req: Request, res: Response) => {
 };
 
 export const DeleteRecord = async (req: Request, res: Response) => {
-  const params = { id: Utility.sanitizeId(req.params.id) };
+  const params = { id: Utility.sanitizeId(req.params.id) , user_id:req.user.id };
   const response = await RecordServices.DeleteRecord(params);
   res.status(response.statusCode).send(response);
 };
