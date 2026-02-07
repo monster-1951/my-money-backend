@@ -4,10 +4,6 @@ import * as Utility from '../lib/helper'
 
 const ACCOUNTS = prisma.accounts;
 
-// HELPERS
-
-
-
 export const findExistingAccountByIdOrName = async (
   params: AccountServiceTypes.findExistingAccountParams,
 ): Promise<AccountServiceTypes.findExistingAccountByIdOrNameResponse> => {
@@ -142,6 +138,7 @@ export const getAllAccounts = async (params: {
     });
     return {
       allAccounts,
+      TotalCount:allAccounts.length,
       message: "Accounts Fetched successfully",
       statusCode: 200,
     };

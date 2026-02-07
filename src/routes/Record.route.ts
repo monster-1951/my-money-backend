@@ -1,22 +1,52 @@
-import express, { Request,Response } from 'express'
-import { getAllRecords } from '../services/Records.services';
-import { AuthorizeMiddleWare, validateRequestAgainstSchema } from '../middlewares/middlewares';
-import { TransactionRecordSchema } from '../schemas/TransactionRecord.schema';
+import express from "express";
+import * as Middleware from "../middlewares/middlewares";
+import * as Schemas from "../schemas/RecordSchema";
+import * as RecordController from "../controllers/RecordController";
 
-const record = express.Router()
+const record = express.Router();
 
-record.use(AuthorizeMiddleWare)
+record.use(Middleware.AuthorizeMiddleWare);
 
-record.get("/getAll", async (req: Request, res:Response) => {
-  const allRecords = await getAllRecords();
-  res.send({allRecords,user:req.user});
-});
+record.get("/", RecordController.GetRecords);
 
 record.post(
-  "/create",
-  validateRequestAgainstSchema(TransactionRecordSchema),
-  async (req: Request, res: Response) => {
-    res.send(req);
-  },
+  "/create/",
+  Middleware.validateRequestAgainstSchema(Schemas.IncomeExpenseRecordSchema),
+  RecordController.CreateIncomeExpenseRecord,
 );
-export default record
+
+record.post(
+  "/create/transer_record",
+  Middleware.validateRequestAgainstSchema(Schemas.TransferRecordSchema),
+  RecordController.CreateTransferRecord,
+);
+
+record.put(
+  "/update/to_income_expense/:id",
+  Middleware.validateRequestAgainstSchema(Schemas.IncomeExpenseRecordSchema),
+  RecordController.UpdateIncomeExpenseRecord,
+);
+
+record.put(
+  "/update/to_transfer_record/:id",
+  Middleware.validateRequestAgainstSchema(Schemas.TransferRecordSchema),
+  RecordController.UpdateTransferRecord,
+);
+
+record.patch(
+  "/update/to_income_expense/:id",
+  Middleware.validateRequestAgainstSchema(
+    Schemas.ModifyIncomeExpenseRecordSchema,
+  ),
+  RecordController.UpdateIncomeExpenseRecord,
+);
+
+record.patch(
+  "/update/to_transfer_record/:id",
+  Middleware.validateRequestAgainstSchema(Schemas.ModifyTransferRecordSchema),
+  RecordController.UpdateTransferRecord,
+);
+
+record.delete("/delete/:id", RecordController.DeleteRecord);
+
+export default record;

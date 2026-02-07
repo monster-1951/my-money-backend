@@ -10,7 +10,7 @@ datasource db {
 model accounts {
   id                                               BigInt    @id @default(autoincrement())
   name                                             String    @db.VarChar(30)
-  balance                                          Float     @db.Real
+  balance                                          Decimal   @default(0) @db.Decimal(19, 4)
   user_id                                          BigInt
   users                                            users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_owner_id_fkey")
   records_records_accountToaccounts                records[] @relation("records_accountToaccounts")
@@ -29,7 +29,7 @@ model categories {
 model records {
   id                                                BigInt      @id @default(autoincrement())
   type                                              record_type
-  amount                                            Float       @db.Real
+  amount                                            Decimal     @default(0) @db.Decimal(19, 4)
   account                                           BigInt
   time                                              DateTime    @db.Timestamptz(6)
   category                                          BigInt?

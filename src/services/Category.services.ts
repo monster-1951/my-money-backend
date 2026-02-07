@@ -54,6 +54,7 @@ export const getAll = async (
       message: "Finding Categories successful",
       statusCode: 200,
       categories,
+      TotalCount:categories.length
     };
   } catch (error) {
     return { message: "Failed to find Categories", statusCode: 500, error };

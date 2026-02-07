@@ -54,6 +54,7 @@ export interface DeleteCategoryParams extends findExistingCategoryByIdParams {}
 
 export interface getAllCategoriesResponse extends ServiceResponse {
   categories?: Category[];
+  TotalCount?:number
 }
 
 export interface CreateCategoryResponse extends ServiceResponse {
