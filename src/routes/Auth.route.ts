@@ -1,11 +1,13 @@
 import express, { Request, Response } from "express";
-import { validateRequestAgainstSchema } from "../middlewares/middlewares";
+import { AuthorizeMiddleWare, validateRequestAgainstSchema } from "../middlewares/middlewares";
 import { LoginSchema } from "../schemas/LoginSchema";
-import { loginController } from "../controllers/Authcontrollers";
+import { loginController, sendCurrentUserToBackend } from "../controllers/Authcontrollers";
 import { UserSchema } from "../schemas/UserSchema";
 import { createUserController } from "../controllers/Usercontrollers";
 
 const auth = express.Router();
+
+auth.get("/me",AuthorizeMiddleWare,sendCurrentUserToBackend)
 
 auth.post("/login",validateRequestAgainstSchema(LoginSchema),loginController);
 

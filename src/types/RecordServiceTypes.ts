@@ -1,7 +1,7 @@
 import z from "zod";
 import * as RecordSchemas from "../schemas/RecordSchema";
 import * as StandardType from "./StandardTypes";
-import { Account } from "./AccountServiceTypes";
+import { Category } from "./CategoryServiceTypes";
 
 
 export type record_type = "Income" | "Expense" | "Transfer";

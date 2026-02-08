@@ -4,10 +4,19 @@ import user from "./routes/User.route";
 import record from "./routes/Record.route";
 import account from "./routes/Account.route";
 import category from "./routes/Category.route";
+import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 const app = express();
 
+const allowd_origins = ["http://localhost:5173","https://my-money-rose.vercel.app"]
+
+app.use(cors({
+  credentials:true,
+  origin:allowd_origins
+}))
 app.use(express.json());
+app.use(cookieParser())
 
 app.use("/auth",auth)
 app.use("/user",user)

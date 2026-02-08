@@ -1,9 +1,9 @@
-import { record_type } from "../generated/prisma/enums";
 import { prisma } from "../lib/prisma";
 import * as RecordServiceTypes from "../types/RecordServiceTypes";
 
 const RECORDS = prisma.records;
 const ACCOUNTS = prisma.accounts;
+
 export const GetRecords = async (
   params: RecordServiceTypes.GetAllRecordsParams,
 ): Promise<RecordServiceTypes.GetAllRecordsResponse> => {
@@ -17,10 +17,15 @@ export const GetRecords = async (
       },
       skip: params.queryParams.page || 0,
       take: 10,
+      include:{
+        categories:true,
+        accounts_records_accountToaccounts:true,
+        accounts_records_transferred_to_accountToaccounts:true
+      }
     }),
     RECORDS.count()
     ])
-    if (Records.length)
+    if (Records)
       return {
         message: "Fetched Records Successfully",
         statusCode: 200,

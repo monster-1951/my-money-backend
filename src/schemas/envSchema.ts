@@ -16,6 +16,9 @@ export const envSchema = z.object({
   TOKEN_HEADER_KEY: z.string().nonempty({
     error: "TOKEN_HEADER_KEY is missing in environment variables",
   }),
+  NODE_ENV:z.string().nonempty({
+    error:"NODE_ENV is missing"
+  })
 });
 
 export interface Env extends z.infer<typeof envSchema> {}

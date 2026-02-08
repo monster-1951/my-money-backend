@@ -10,7 +10,6 @@ export const findUserAndValidateCredentials = async (
   params: AuthServiceTypes.findUserAndValidateCredentialsParams,
 ): Promise<AuthServiceTypes.findUserAndValidateCredentialsResponse> => {
   const user = await UserServices.findUserByEmail(params.email);
-
   if (user) {
     const passwordMatch = compareSync(params.password, user.password_hash);
 

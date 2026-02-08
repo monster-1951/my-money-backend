@@ -32,15 +32,15 @@ export const AuthorizeMiddleWare = async (
   next: NextFunction,
 ) => {
   const jwtSecretKey = ENV.JWT_SECRET_KEY;
-  const token = req.header("Authorization")?.split(" ")[1] || "";
-  Jwt.verify(token, jwtSecretKey, (error, decoded) => {
-    if (error) {
-      res.status(401).send(error);
-    } else {
-      req.user = decoded as DecodedUserPayload;
+  const token = req.cookies.sessionToken || ""
+  try {
+     const decoded = Jwt.verify(token,jwtSecretKey)
+     req.user = decoded as DecodedUserPayload;
       next();
-    }
-  });
+  } catch (error) {
+    res.status(401).send(error);
+  }
+
 };
 
 export const sanitizeIdParam = (req:Request,res:Response,next:NextFunction) => {
