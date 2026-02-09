@@ -18,6 +18,9 @@ export const envSchema = z.object({
   }),
   NODE_ENV:z.string().nonempty({
     error:"NODE_ENV is missing"
+  }),
+  CSRF_TOKEN_SECRET: z.string().nonempty({
+    error:"CSRF_TOKEN_SECRET missing"
   })
 });
 
