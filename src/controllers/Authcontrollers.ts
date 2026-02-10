@@ -11,7 +11,11 @@ export const loginController = async (
     const response = await AuthServices.findUserAndValidateCredentials(
       req.body,
     );
-
+    console.log({
+      secure: req.secure,
+      protocol: req.protocol,
+      forwardedProto: req.headers["x-forwarded-proto"],
+    });
     if (response.sessionUser) {
       const token = await AuthServices.generateJWTToken({
         sessionUser: response.sessionUser,
@@ -23,14 +27,16 @@ export const loginController = async (
         sameSite: "none",
         secure: ENV.COOKIE_SECURE === "true",
       });
-      res
-        .status(200)
-        .send({
-          message: "HttpOnly cookie has been set",
-          success: true,
-          CSRF_TOKEN: crypto.randomUUID(),
-        });
-      console.log({ message: "HttpOnly cookie has been set", success: true , secure: ENV.COOKIE_SECURE === "true"});
+      res.status(200).send({
+        message: "HttpOnly cookie has been set",
+        success: true,
+        CSRF_TOKEN: crypto.randomUUID(),
+      });
+      console.log({
+        message: "HttpOnly cookie has been set",
+        success: true,
+        secure: ENV.COOKIE_SECURE === "true",
+      });
     } else {
       res
         .status(response.statusCode)
@@ -44,8 +50,12 @@ export const loginController = async (
 
 export const sendCurrentUserToBackend = async (req: Request, res: Response) => {
   const token = await AuthServices.generateJWTToken({
-    sessionUser:{id:req.user.id,email:req.user.email,name:req.user.name},
-    secret:ENV.CSRF_TOKEN_SECRET
-  })
+    sessionUser: {
+      id: req.user.id,
+      email: req.user.email,
+      name: req.user.name,
+    },
+    secret: ENV.CSRF_TOKEN_SECRET,
+  });
   res.send({ USER: req.user, CSRF_TOKEN: token });
 };
