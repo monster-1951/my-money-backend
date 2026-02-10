@@ -9,6 +9,8 @@ import cors from 'cors'
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 const allowed_origins = ["http://localhost:5173","https://my-money-rose.vercel.app"]
 
 app.use(cors({
