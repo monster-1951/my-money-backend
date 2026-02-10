@@ -8,7 +8,6 @@
     "dev": "nodemon",
     "build": "tsc",
     "start": "npx prisma migrate deploy && node dist/index.js",
-    "prestart": "npm run build",
     "postinstall": "npx prisma generate"
   },
   "dependencies": {
