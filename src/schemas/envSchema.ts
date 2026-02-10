@@ -16,11 +16,11 @@ export const envSchema = z.object({
   TOKEN_HEADER_KEY: z.string().nonempty({
     error: "TOKEN_HEADER_KEY is missing in environment variables",
   }),
-  NODE_ENV:z.string().nonempty({
-    error:"NODE_ENV is missing"
-  }),
   CSRF_TOKEN_SECRET: z.string().nonempty({
     error:"CSRF_TOKEN_SECRET missing"
+  }),
+  COOKIE_SECURE:z.string().nonempty({
+    error:"COOKIE_SECURE FLAG is missing"
   })
 });
 

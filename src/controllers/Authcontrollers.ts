@@ -21,7 +21,7 @@ export const loginController = async (
         httpOnly: true,
         maxAge: 604800000,
         sameSite: "none",
-        secure: ENV.NODE_ENV === "production",
+        secure: ENV.COOKIE_SECURE === "true",
       });
       res
         .status(200)
