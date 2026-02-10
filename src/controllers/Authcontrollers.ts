@@ -30,7 +30,7 @@ export const loginController = async (
           success: true,
           CSRF_TOKEN: crypto.randomUUID(),
         });
-      console.log({ message: "HttpOnly cookie has been set", success: true });
+      console.log({ message: "HttpOnly cookie has been set", success: true , secure: ENV.COOKIE_SECURE === "true"});
     } else {
       res
         .status(response.statusCode)
