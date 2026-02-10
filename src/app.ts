@@ -15,9 +15,9 @@ const allowed_origins = ["http://localhost:5173","https://my-money-rose.vercel.a
 
 app.use(cors({
   credentials:true,
-  origin:allowed_origins
+  origin:allowed_origins,
 }))
-app.options("*",cors())
+app.options("/*", cors())
 app.use(express.json());
 app.use(cookieParser())
 
