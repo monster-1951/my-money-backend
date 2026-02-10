@@ -13,6 +13,6 @@ auth.post("/login",validateRequestAgainstSchema(LoginSchema),loginController);
 
 auth.post("/register",validateRequestAgainstSchema(UserSchema),createUserController);
 
-auth.get("/logout",logOutController)
+auth.get("/logout",AuthorizeCookieToIssueCSRF,logOutController)
 
 export default auth;
