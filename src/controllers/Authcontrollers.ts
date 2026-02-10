@@ -30,7 +30,6 @@ export const loginController = async (
       res.status(200).send({
         message: "HttpOnly cookie has been set",
         success: true,
-        CSRF_TOKEN: crypto.randomUUID(),
       });
       console.log({
         message: "HttpOnly cookie has been set",
@@ -49,7 +48,8 @@ export const loginController = async (
 };
 
 export const sendCurrentUserToBackend = async (req: Request, res: Response) => {
-  const token = await AuthServices.generateJWTToken({
+  try {
+      const token = await AuthServices.generateJWTToken({
     sessionUser: {
       id: req.user.id,
       email: req.user.email,
@@ -58,4 +58,25 @@ export const sendCurrentUserToBackend = async (req: Request, res: Response) => {
     secret: ENV.CSRF_TOKEN_SECRET,
   });
   res.send({ USER: req.user, CSRF_TOKEN: token });
+  } catch (error) {
+    res.status(500).send({message:"Internal server error"})
+  }
+
+};
+
+export const logOutController = async (req: Request, res: Response) => {
+try {
+    res.status(200).cookie("sessionToken", "", {
+    httpOnly: true,
+    maxAge: 0,
+    sameSite: "none",
+    secure: ENV.COOKIE_SECURE === "true",
+  });
+  res.status(200).send({
+        message: "HttpOnly cookie has been set to empty",
+        success: true,
+      });
+} catch (error) {
+  res.status(500).send({message:"Internal server error"})
+}
 };
