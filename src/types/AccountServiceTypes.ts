@@ -31,6 +31,7 @@ export interface createNewAccountParams {
   name: string;
   balance: number;
   user_id: bigint;
+  icon: bigint;
 }
 
 export interface updateAccountParams {
@@ -43,7 +44,8 @@ export interface deleteAccountParams extends getAccountByIdParams {}
 
 // RESPONSE TYPES
 
-export interface createNewAccountResponse extends StandardTypes.ServiceResponse {
+export interface createNewAccountResponse
+  extends StandardTypes.ServiceResponse {
   newAccount?: newAccount;
 }
 
@@ -56,7 +58,8 @@ export interface getAccountByIdResponse extends StandardTypes.ServiceResponse {
   Account?: Account;
 }
 
-export interface findExistingAccountByIdOrNameResponse extends StandardTypes.ServiceResponse {
+export interface findExistingAccountByIdOrNameResponse
+  extends StandardTypes.ServiceResponse {
   existingAccountsOfUser?: Account[];
 }
 
