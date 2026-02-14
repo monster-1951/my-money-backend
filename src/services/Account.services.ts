@@ -135,6 +135,9 @@ export const getAllAccounts = async (params: {
       where: {
         user_id: params.user_id,
       },
+      orderBy:{
+        id:"asc"
+      }
     });
     return {
       allAccounts,
@@ -183,8 +186,8 @@ export const deleteAccount = async (
         user_id: params.user_id,
       },
     });
-    return { message: "", statusCode: 200, deletedAccount };
+    return { message: "Account Deleted Successfully", statusCode: 200, deletedAccount };
   } catch (error) {
-    return { message: "", statusCode: 500, error };
+    return { message: "Failed to Delete Account", statusCode: 500, error };
   }
 };
