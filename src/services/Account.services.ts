@@ -123,7 +123,6 @@ export const createNewAccount = async (
       statusCode: 200,
     };
   } catch (error) {
-    console.log(params)
     return { message: "New acccount creation failed", statusCode: 500, error };
   }
 };
