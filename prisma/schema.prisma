@@ -12,7 +12,9 @@ model accounts {
   name                                             String    @db.VarChar(30)
   balance                                          Decimal   @default(0) @db.Decimal(19, 4)
   user_id                                          BigInt
+  icon                                             BigInt
   users                                            users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "accounts_owner_id_fkey")
+  icons                                            icons     @relation(fields: [icon], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_icons")
   records_records_accountToaccounts                records[] @relation("records_accountToaccounts")
   records_records_transferred_to_accountToaccounts records[] @relation("records_transferred_to_accountToaccounts")
 }
@@ -58,6 +60,7 @@ model icons {
   id         BigInt       @id @default(autoincrement())
   name       String?
   categories categories[]
+  accounts   accounts[]
 }
 
 enum category_type {
