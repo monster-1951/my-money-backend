@@ -10,13 +10,13 @@ record.use(Middleware.AuthorizeMiddleWare);
 record.get("/", RecordController.GetRecords);
 
 record.post(
-  "/create/",
+  "/create",
   Middleware.validateRequestAgainstSchema(Schemas.IncomeExpenseRecordSchema),
   RecordController.CreateIncomeExpenseRecord,
 );
 
 record.post(
-  "/create/transer_record",
+  "/create/transfer_record",
   Middleware.validateRequestAgainstSchema(Schemas.TransferRecordSchema),
   RecordController.CreateTransferRecord,
 );

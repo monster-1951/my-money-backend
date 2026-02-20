@@ -11,11 +11,6 @@ export const loginController = async (
     const response = await AuthServices.findUserAndValidateCredentials(
       req.body,
     );
-    console.log({
-      secure: req.secure,
-      protocol: req.protocol,
-      forwardedProto: req.headers["x-forwarded-proto"],
-    });
     if (response.sessionUser) {
       const token = await AuthServices.generateJWTToken({
         sessionUser: response.sessionUser,
@@ -30,11 +25,6 @@ export const loginController = async (
       res.status(200).send({
         message: "HttpOnly cookie has been set",
         success: true,
-      });
-      console.log({
-        message: "HttpOnly cookie has been set",
-        success: true,
-        secure: ENV.COOKIE_SECURE === "true",
       });
     } else {
       res
