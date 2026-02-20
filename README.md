@@ -1,4 +1,4 @@
-# Personal Finance Management Applicatin | Full stack project
+# Personal Finance Management Application | Full stack project
 
 A full stack personal finance management application with transactional balance integrity , db level constraints and CSRF protected authentication.
 
@@ -30,7 +30,7 @@ A full stack personal finance management application with transactional balance 
 
 - Vercel (Frontend)
 - Render (Backend)
-- Neon (Databse)
+- Neon (Database)
 
 ## Local Setup
 
@@ -94,13 +94,13 @@ The project has 3 major entities , accounts - it has money , records - the trans
   - Records are of 3 kinds . Income , expense , transfer .
   - If user has recieved some money , it is income , if he spends , it is expense and if he transfers money from his account to one of his accounts , it is transfer .
   - Each record could be tagged to a category like salary , food , diet , discount , shopping , refund etc . ( Except for transfer)
-  - It involes Record type , the account involed ( two accounts in case of transfer ), amount , date and time of the transaction .
-  - Creating or updating or deleteing the transaction will auto update the balance in the concerned accounts and the balance will be reflected there itself .
+  - It involves Record type , the account involved ( two accounts in case of transfer ), amount , date and time of the transaction .
+  - Creating or updating or deleting the transaction will auto update the balance in the concerned accounts and the balance will be reflected there itself .
 - ### Categories
   - These are of 2 kinds , Income categories and Expense Categories .
   - User can assign the category to a record based on the record type .
 
-> To create a transfer record , the user must own both from account and to account. Because the purpose it to maintain personal finanaces .
+> To create a transfer record , the user must own both from account and to account. Because the purpose it to maintain personal finances .
 
 ## Database
 
@@ -187,7 +187,7 @@ There are 5 tables in our db .
 - Here our frontend and backend were deployed on different domains , so we had to set samesite as none .
 
 ## CSRF
-- This samesite-none configuration invites CSRF attacks because broswer auto attaches the token on every request being made to backend irrespective of request origin domain.
+- This samesite-none configuration invites CSRF attacks because browser auto attaches the token on every request being made to backend irrespective of request origin domain.
 - To prevent this , we added a x-csrf token header authentication . Backend only allows those requests who has both jwt token in their cookie and the x-csrf token in their header .
 - This prevents the CSRF attack also .
 
@@ -260,4 +260,4 @@ CLIENT ---> MIDDLEWARE ---> ROUTE ---> CONTROLLER ---> SERVICE ---> PRISMA --> D
 - The app is organized page wise . 
 - Routes are managed by react-router-dom. 
 - Each page is a component , Each component has it's subcomponents . - Components are defined in the components directory , in organized way . 
-- Related compoonents are kept in related directory inside the main components directory .
+- Related components are kept in related directory inside the main components directory .
