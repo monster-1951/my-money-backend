@@ -15,8 +15,8 @@ export const GetRecords = async (
         user_id: params.user_id,
         AND: params.queryParams.filters,
       },
-      skip: params.queryParams.page || 0,
-      take: 10,
+      // skip: params.queryParams.page || 0,
+      // take: 10,
       include:{
         categories:true,
         accounts_records_accountToaccounts:true,
